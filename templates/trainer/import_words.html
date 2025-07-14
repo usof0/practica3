@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="import-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-header bg-white border-0">
+                    <h2 class="h4 fw-bold text-primary mb-0">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i>Import Words
+                    </h2>
+                </div>
+                
+                <div class="card-body">
+                    <div class="alert alert-info d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                        <div>
+                            <h5 class="alert-heading mb-2">Before You Import</h5>
+                            <p class="mb-0">Ensure your CSV file follows the required format for successful import.</p>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex align-items-center">
+                                <i class="bi bi-file-earmark-spreadsheet-fill text-primary me-2"></i>
+                                CSV File Requirements
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-borderless mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Column</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                            <th>Example</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>english</code></td>
+                                            <td><span class="badge bg-success">Yes</span></td>
+                                            <td>Word in English</td>
+                                            <td><span class="text-muted">"apple"</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>translation</code></td>
+                                            <td><span class="badge bg-success">Yes</span></td>
+                                            <td>Translation in your target language</td>
+                                            <td><span class="text-muted">"manzana"</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>example</code></td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Example sentence (optional)</td>
+                                            <td><span class="text-muted">"I eat an apple"</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'download-sample-csv' %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-download me-1"></i>Download Sample CSV
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.csv_file.id_for_label }}" class="btn btn-outline-success">
+                                <i class="bi bi-file-earmark-arrow-up me-1"></i>Select CSV File
+                            </label>
+                            <div class="file-upload-wrapper">
+                                {{ form.csv_file }}
+                            </div>
+                            <div class="form-text mt-2">
+                                Maximum file size: 5MB. Supported formats: .csv
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-3">
+                            <a href="{% url 'word-list' %}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-upload me-1"></i>Import Words
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .import-container {
+        padding: 2rem 0;
+    }
+    
+    .file-upload-wrapper {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .file-upload-wrapper input[type="file"] {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .file-upload-wrapper .is-invalid {
+        border-color: #dc3545 !important;
+        background-color: #fff5f5 !important;
+    }
+    
+    .file-error-message {
+        display: block;
+        margin-top: 0.25rem;
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+
+    .file-upload-wrapper .form-control {
+        padding: 0.5rem 1rem;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .file-upload-wrapper:hover .form-control {
+        border-color: #86b7fe;
+        background-color: #f0f7ff;
+    }
+    
+    .file-upload-wrapper .form-control::after {
+        content: "Choose file or drag here";
+        display: block;
+        color: #6c757d;
+    }
+    
+    .file-upload-wrapper .form-control:valid::after {
+        content: attr(data-file-name);
+        color: #212529;
+    }
+
+    .btn-outline-success {
+        --bs-btn-color: #198754;
+        --bs-btn-border-color: #198754;
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #198754;
+        --bs-btn-hover-border-color: #198754;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #198754;
+        --bs-btn-active-border-color: #198754;
+    }
+    
+    .table-sm td, .table-sm th {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    code {
+        color: #d63384;
+        background-color: #f8f9fa;
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileInputDisplay = fileInput.nextElementSibling;
+        const importBtn = document.querySelector('button[type="submit"]');
+        let errorMsg = null;
+
+        // Update file display when selected
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileInputDisplay.dataset.fileName = this.files[0].name;
+                fileInputDisplay.classList.add('is-valid');
+                fileInputDisplay.classList.remove('is-invalid');
+                if (errorMsg) errorMsg.remove();
+            } else {
+                fileInputDisplay.removeAttribute('data-file-name');
+                fileInputDisplay.classList.remove('is-valid');
+            }
+        });
+
+        // Handle import button click
+        importBtn.addEventListener('click', function(e) {
+            // Only check if no file selected
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                
+                // Add error styling
+                fileInputDisplay.classList.add('is-invalid');
+                fileInputDisplay.classList.remove('is-valid');
+                
+                // Create error message if doesn't exist
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.className = 'invalid-feedback file-error-message';
+                    errorMsg.textContent = 'Please select a CSV file to import';
+                    fileInputDisplay.parentNode.insertBefore(errorMsg, fileInputDisplay.nextSibling);
+                }
+                
+                // Scroll to error
+                fileInputDisplay.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

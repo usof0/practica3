@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h2 class="h4 mb-0">
+                            <i class="bi bi-person-plus-fill me-2"></i>Create Your Account
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+                                <div>
+                                    <h5 class="alert-heading mb-1">Registration Error</h5>
+                                    <ul class="mb-0 ps-3">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+                            
+                            <div class="mb-4">
+                                <label for="id_username" class="form-label fw-semibold">
+                                    <i class="bi bi-person-fill me-1"></i>Username
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                           id="id_username" required autofocus
+                                           placeholder="Enter your username"
+                                           value="{{ form.username.value|default:'' }}">
+                                </div>
+                                <div class="form-text">Letters, digits and @/./+/-/_ only</div>
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_password1" class="form-label fw-semibold">
+                                    <i class="bi bi-lock-fill me-1"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" name="password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" 
+                                           id="id_password1" required
+                                           placeholder="Create your password">
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                            aria-label="Toggle password visibility">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.password1.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="password-strength mt-2">
+                                    <div class="progress">
+                                        <div id="password-strength-bar" class="progress-bar" role="progressbar"></div>
+                                    </div>
+                                    <small class="text-muted">Password strength: <span id="strength-text">None</span></small>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label fw-semibold">
+                                    <i class="bi bi-lock-fill me-1"></i>Confirm Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" name="password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                                           id="id_password2" required
+                                           placeholder="Repeat your password">
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                            aria-label="Toggle password visibility">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.password2.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg py-2">
+                                    <i class="bi bi-person-plus me-2"></i>Register Now
+                                </button>
+                            </div>
+                            
+                            <div class="text-center small text-muted mb-3">
+                                By registering, you agree to our 
+                                <a href="#" class="text-decoration-none">Terms of Service</a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card-footer bg-light text-center py-3">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{% url 'login' %}" class="fw-semibold text-decoration-none">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<style>
+    .auth-container {
+        padding: 3rem 0;
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-control {
+        border-left: none;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #86b7fe;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+    
+    .toggle-password {
+        border-left: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background-color: #4361ee;
+        border: none;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #3a56d4;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-secondary {
+        border-color: #dee2e6;
+    }
+    
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+    
+    .progress {
+        height: 4px;
+        margin-bottom: 0.25rem;
+    }
+    
+    .strength-weak {
+        width: 25%;
+        background-color: #dc3545;
+    }
+    
+    .strength-medium {
+        width: 50%;
+        background-color: #fd7e14;
+    }
+    
+    .strength-strong {
+        width: 75%;
+        background-color: #ffc107;
+    }
+    
+    .strength-very-strong {
+        width: 100%;
+        background-color: #28a745;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-focus username field
+        document.getElementById('id_username').focus();
+        
+        // Toggle password visibility
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('input');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+                this.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+            });
+        });
+        
+        // Enter key navigation
+        const fields = ['id_username', 'id_password1', 'id_password2'];
+        fields.forEach((fieldId, index) => {
+            const field = document.getElementById(fieldId);
+            field.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (index < fields.length - 1) {
+                        document.getElementById(fields[index + 1]).focus();
+                    } else {
+                        document.querySelector('form').submit();
+                    }
+                }
+            });
+        });
+        
+        // Password strength indicator
+        const passwordInput = document.getElementById('id_password1');
+        const strengthBar = document.getElementById('password-strength-bar');
+        const strengthText = document.getElementById('strength-text');
+        
+        if (passwordInput && strengthBar && strengthText) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) strength += 1;
+                if (password.length >= 12) strength += 1;
+                
+                // Character variety checks
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                // Update UI
+                strengthBar.className = 'progress-bar';
+                if (password.length === 0) {
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = 'None';
+                } else {
+                    switch(strength) {
+                        case 0:
+                        case 1:
+                            strengthBar.classList.add('strength-weak');
+                            strengthText.textContent = 'Weak';
+                            break;
+                        case 2:
+                        case 3:
+                            strengthBar.classList.add('strength-medium');
+                            strengthText.textContent = 'Medium';
+                            break;
+                        case 4:
+                            strengthBar.classList.add('strength-strong');
+                            strengthText.textContent = 'Strong';
+                            break;
+                        case 5:
+                            strengthBar.classList.add('strength-very-strong');
+                            strengthText.textContent = 'Very Strong';
+                            break;
+                    }
+                }
+            });
+        }
+        
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-focus username field
+        document.getElementById('id_username').focus();
+        
+        // Toggle password visibility
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('input');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+                this.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+            });
+        });
+        
+        // Enter key navigation
+        const fields = ['id_username', 'id_password1', 'id_password2'];
+        fields.forEach((fieldId, index) => {
+            const field = document.getElementById(fieldId);
+            field.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (index < fields.length - 1) {
+                        document.getElementById(fields[index + 1]).focus();
+                    } else {
+                        document.querySelector('form').submit();
+                    }
+                }
+            });
+        });
+        
+        // Password strength indicator
+        const passwordInput = document.getElementById('id_password1');
+        const strengthBar = document.getElementById('password-strength-bar');
+        const strengthText = document.getElementById('strength-text');
+        
+        if (passwordInput && strengthBar && strengthText) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) strength += 1;
+                if (password.length >= 12) strength += 1;
+                
+                // Character variety checks
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                // Update UI
+                strengthBar.className = 'progress-bar';
+                if (password.length === 0) {
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = 'None';
+                } else {
+                    switch(strength) {
+                        case 0:
+                        case 1:
+                            strengthBar.classList.add('strength-weak');
+                            strengthText.textContent = 'Weak';
+                            break;
+                        case 2:
+                        case 3:
+                            strengthBar.classList.add('strength-medium');
+                            strengthText.textContent = 'Medium';
+                            break;
+                        case 4:
+                            strengthBar.classList.add('strength-strong');
+                            strengthText.textContent = 'Strong';
+                            break;
+                        case 5:
+                            strengthBar.classList.add('strength-very-strong');
+                            strengthText.textContent = 'Very Strong';
+                            break;
+                    }
+                }
+            });
+        }
+        
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+{% endblock %}
